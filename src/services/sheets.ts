@@ -75,16 +75,16 @@ async function fetchSheet(range: string): Promise<string[][]> {
 }
 
 export async function fetchLeaderboard(): Promise<LeaderboardEntry[]> {
-  const rows = await fetchSheet("Leaderboard!A2:I");
-  return rows.map((row) => ({
-    position: parseInt(row[0] ?? "0", 10),
-    name: row[2] ?? "",
-    points: parseInt(row[3] ?? "0", 10),
-    munsterWinner: row[4] ?? "",
-    leinsterWinner: row[5] ?? "",
-    topScorerMunster: row[6] ?? "",
-    topScorerLeinster: row[7] ?? "",
+  const rows = await fetchSheet("Leaderboard!A2:H");
+  const entries = rows.map((row) => ({
+    name: row[1] ?? "",
+    points: parseInt(row[2] ?? "0", 10),
+    munsterWinner: row[3] ?? "",
+    leinsterWinner: row[4] ?? "",
+    topScorerMunster: row[5] ?? "",
+    topScorerLeinster: row[6] ?? "",
   }));
+  return entries.sort((a, b) => b.points - a.points);
 }
 
 export async function fetchMunsterScorers(): Promise<ScorerResult> {

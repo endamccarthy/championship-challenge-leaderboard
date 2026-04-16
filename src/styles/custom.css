@@ -442,13 +442,16 @@ body {
 
 .card-picks {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.35rem 1rem;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  gap: 0.35rem 0.5rem;
 }
 
 .pick {
   display: flex;
-  flex-direction: column;
+  align-items: baseline;
+  gap: 0.35rem;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .pick-label {
@@ -457,12 +460,16 @@ body {
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  white-space: nowrap;
 }
 
 .pick-value {
   font-size: 0.82rem;
   color: var(--text-secondary);
   font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* === MOBILE CARD LIST (Scorers) === */
@@ -542,51 +549,28 @@ body {
   font-weight: 600;
 }
 
-/* === PAGINATION === */
-.pagination {
+/* === SCROLL SENTINEL === */
+.scroll-sentinel {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.75rem;
-  padding: 1rem 1.5rem;
-  border-top: 1px solid var(--border);
+  padding: 1.5rem;
 }
 
-.pagination-btn {
+.scroll-loading {
   font-family: var(--font-body);
-  background: var(--bg-elevated);
-  color: var(--text-primary);
-  border: 1px solid var(--border-light);
-  padding: 0.55rem 1.25rem;
-  font-size: 0.88rem;
-  font-weight: 600;
-  border-radius: var(--radius-pill);
-  cursor: pointer;
-  transition: all 0.2s;
-  min-height: 40px;
-}
-
-.pagination-btn:hover:not(:disabled) {
-  background: var(--red);
-  border-color: var(--red);
-  color: #fff;
-  box-shadow: 0 2px 12px var(--red-glow);
-}
-
-.pagination-btn:disabled {
-  opacity: 0.3;
-  cursor: not-allowed;
-}
-
-.pagination-btn:focus-visible {
-  outline: 2px solid var(--red);
-  outline-offset: 2px;
-}
-
-.pagination-info {
   font-size: 0.85rem;
   color: var(--text-muted);
   font-weight: 500;
+}
+
+.scroll-end {
+  text-align: center;
+  padding: 1rem 1.5rem;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border);
 }
 
 /* === FOOTER === */
@@ -684,17 +668,8 @@ body {
   }
 
   .card-picks {
-    grid-template-columns: 1fr;
-    gap: 0.25rem;
-  }
-
-  .pagination {
-    gap: 0.5rem;
-  }
-
-  .pagination-btn {
-    padding: 0.5rem 0.85rem;
-    font-size: 0.82rem;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    gap: 0.2rem 0.5rem;
   }
 }
 

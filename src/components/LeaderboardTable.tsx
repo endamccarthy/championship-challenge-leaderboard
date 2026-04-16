@@ -1,22 +1,30 @@
-import { useState, useMemo } from "preact/hooks";
+import {
+  useState,
+  useMemo,
+  useCallback,
+  useRef,
+  useEffect,
+} from "preact/hooks";
 import {
   useReactTable,
   getCoreRowModel,
   getSortedRowModel,
   getFilteredRowModel,
-  getPaginationRowModel,
   flexRender,
   createColumnHelper,
   type SortingState,
 } from "@tanstack/react-table";
 import type { LeaderboardEntry } from "../types";
 
+const PAGE_SIZE = 50;
+
 const columnHelper = createColumnHelper<LeaderboardEntry>();
 
 const columns = [
-  columnHelper.accessor("position", {
+  columnHelper.display({
+    id: "position",
     header: "#",
-    cell: (info) => info.getValue(),
+    cell: (info) => info.row.index + 1,
     enableGlobalFilter: false,
     size: 50,
   }),
@@ -54,6 +62,8 @@ interface LeaderboardTableProps {
 export function LeaderboardTable({ data }: LeaderboardTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const sentinelRef = useRef<HTMLDivElement>(null);
 
   const tableData = useMemo(() => data, [data]);
 
@@ -66,11 +76,41 @@ export function LeaderboardTable({ data }: LeaderboardTableProps) {
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    initialState: {
-      pagination: { pageSize: 10 },
-    },
   });
+
+  const allRows = table.getRowModel().rows;
+  const visibleRows = useMemo(
+    () => allRows.slice(0, visibleCount),
+    [allRows, visibleCount],
+  );
+  const hasMore = visibleCount < allRows.length;
+
+  // Reset visible count when filter/sort changes
+  useEffect(() => {
+    setVisibleCount(PAGE_SIZE);
+  }, [globalFilter, sorting]);
+
+  // Intersection observer for infinite scroll
+  const loadMore = useCallback(() => {
+    setVisibleCount((prev) => Math.min(prev + PAGE_SIZE, allRows.length));
+  }, [allRows.length]);
+
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          loadMore();
+        }
+      },
+      { rootMargin: "200px" },
+    );
+
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [loadMore]);
 
   return (
     <div class="table-container">
@@ -137,14 +177,14 @@ export function LeaderboardTable({ data }: LeaderboardTableProps) {
             ))}
           </thead>
           <tbody>
-            {table.getRowModel().rows.length === 0 ? (
+            {allRows.length === 0 ? (
               <tr>
                 <td colSpan={columns.length} class="no-results">
                   No results found
                 </td>
               </tr>
             ) : (
-              table.getRowModel().rows.map((row) => (
+              visibleRows.map((row) => (
                 <tr key={row.id}>
                   {row.getVisibleCells().map((cell) => (
                     <td
@@ -165,7 +205,7 @@ export function LeaderboardTable({ data }: LeaderboardTableProps) {
       </div>
 
       <div class="card-list">
-        {table.getRowModel().rows.length === 0 ? (
+        {allRows.length === 0 ? (
           <div
             class="no-results"
             style={{ padding: "2rem", textAlign: "center" }}
@@ -173,8 +213,9 @@ export function LeaderboardTable({ data }: LeaderboardTableProps) {
             No results found
           </div>
         ) : (
-          table.getRowModel().rows.map((row, index) => {
+          visibleRows.map((row, index) => {
             const entry = row.original;
+            const position = row.index + 1;
             return (
               <div
                 class="leaderboard-card"
@@ -182,9 +223,9 @@ export function LeaderboardTable({ data }: LeaderboardTableProps) {
                 style={{ animationDelay: `${index * 0.04}s` }}
               >
                 <div
-                  class={`card-position${entry.position <= 3 ? ` top-${entry.position}` : ""}`}
+                  class={`card-position${position <= 3 ? ` top-${position}` : ""}`}
                 >
-                  {entry.position}
+                  {position}
                 </div>
                 <div class="card-body">
                   <div class="card-header-row">
@@ -199,15 +240,15 @@ export function LeaderboardTable({ data }: LeaderboardTableProps) {
                       <span class="pick-value">{entry.munsterWinner}</span>
                     </div>
                     <div class="pick">
+                      <span class="pick-label">Top Scorer</span>
+                      <span class="pick-value">{entry.topScorerMunster}</span>
+                    </div>
+                    <div class="pick">
                       <span class="pick-label">Leinster</span>
                       <span class="pick-value">{entry.leinsterWinner}</span>
                     </div>
                     <div class="pick">
-                      <span class="pick-label">Top Scorer M</span>
-                      <span class="pick-value">{entry.topScorerMunster}</span>
-                    </div>
-                    <div class="pick">
-                      <span class="pick-label">Top Scorer L</span>
+                      <span class="pick-label">Top Scorer</span>
                       <span class="pick-value">{entry.topScorerLeinster}</span>
                     </div>
                   </div>
@@ -218,26 +259,15 @@ export function LeaderboardTable({ data }: LeaderboardTableProps) {
         )}
       </div>
 
-      <div class="pagination">
-        <button
-          class="pagination-btn"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          ← Previous
-        </button>
-        <span class="pagination-info">
-          Page {table.getState().pagination.pageIndex + 1} of{" "}
-          {table.getPageCount()}
-        </span>
-        <button
-          class="pagination-btn"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          Next →
-        </button>
-      </div>
+      {hasMore && (
+        <div ref={sentinelRef} class="scroll-sentinel">
+          <span class="scroll-loading">Loading more…</span>
+        </div>
+      )}
+
+      {!hasMore && allRows.length > 0 && (
+        <div class="scroll-end">Showing all {allRows.length} entries</div>
+      )}
     </div>
   );
 }
