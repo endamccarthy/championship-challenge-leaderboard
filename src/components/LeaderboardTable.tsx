@@ -149,7 +149,7 @@ export function LeaderboardTable({ data }: LeaderboardTableProps) {
           </svg>
           <input
             type="search"
-            placeholder="Search by name, county, or player..."
+            placeholder="Search by name..."
             value={globalFilter}
             onInput={(e) =>
               setGlobalFilter((e.target as HTMLInputElement).value)
