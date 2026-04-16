@@ -13,10 +13,28 @@ import {
   flexRender,
   createColumnHelper,
   type SortingState,
+  type FilterFn,
 } from "@tanstack/react-table";
 import type { LeaderboardEntry } from "../types";
 
 const PAGE_SIZE = 50;
+
+/** Strip diacritics so e.g. "áine" matches a search for "aine" */
+function stripDiacritics(str: string): string {
+  return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
+const accentInsensitiveFilter: FilterFn<LeaderboardEntry> = (
+  row,
+  columnId,
+  filterValue,
+) => {
+  const value = stripDiacritics(
+    String(row.getValue(columnId) ?? ""),
+  ).toLowerCase();
+  const filter = stripDiacritics(String(filterValue)).toLowerCase();
+  return value.includes(filter);
+};
 
 const columnHelper = createColumnHelper<LeaderboardEntry>();
 
@@ -73,6 +91,7 @@ export function LeaderboardTable({ data }: LeaderboardTableProps) {
     state: { sorting, globalFilter },
     onSortingChange: setSorting,
     onGlobalFilterChange: setGlobalFilter,
+    globalFilterFn: accentInsensitiveFilter,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
