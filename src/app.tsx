@@ -7,6 +7,8 @@ import {
   dummyLeaderboard,
   dummyMunsterScorers,
   dummyLeinsterScorers,
+  dummyMunsterGameHeaders,
+  dummyLeinsterGameHeaders,
 } from "./data/dummy";
 import {
   fetchLeaderboard,
@@ -19,6 +21,8 @@ export function App() {
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [munsterScorers, setMunsterScorers] = useState<ScorerEntry[]>([]);
   const [leinsterScorers, setLeinsterScorers] = useState<ScorerEntry[]>([]);
+  const [munsterGameHeaders, setMunsterGameHeaders] = useState<string[]>([]);
+  const [leinsterGameHeaders, setLeinsterGameHeaders] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -30,6 +34,8 @@ export function App() {
       setLeaderboard(dummyLeaderboard);
       setMunsterScorers(dummyMunsterScorers);
       setLeinsterScorers(dummyLeinsterScorers);
+      setMunsterGameHeaders(dummyMunsterGameHeaders);
+      setLeinsterGameHeaders(dummyLeinsterGameHeaders);
       setLoading(false);
       return;
     }
@@ -41,8 +47,10 @@ export function App() {
     ])
       .then(([lb, ms, ls]) => {
         setLeaderboard(lb);
-        setMunsterScorers(ms);
-        setLeinsterScorers(ls);
+        setMunsterScorers(ms.entries);
+        setLeinsterScorers(ls.entries);
+        setMunsterGameHeaders(ms.gameHeaders);
+        setLeinsterGameHeaders(ls.gameHeaders);
         setError(null);
       })
       .catch((err) => {
@@ -51,6 +59,8 @@ export function App() {
         setLeaderboard(dummyLeaderboard);
         setMunsterScorers(dummyMunsterScorers);
         setLeinsterScorers(dummyLeinsterScorers);
+        setMunsterGameHeaders(dummyMunsterGameHeaders);
+        setLeinsterGameHeaders(dummyLeinsterGameHeaders);
       })
       .finally(() => setLoading(false));
   }, []);
@@ -80,14 +90,14 @@ export function App() {
               <ScorerTable
                 data={munsterScorers}
                 title="Munster Top Scorers - Scores From Play"
-                gameHeaders={["Game 1", "Game 2", "Game 3", "Game 4"]}
+                gameHeaders={munsterGameHeaders}
               />
             )}
             {activeTab === "leinster" && (
               <ScorerTable
                 data={leinsterScorers}
                 title="Leinster Top Scorers - Scores From Play"
-                gameHeaders={["Game 1", "Game 2", "Game 3", "Game 4", "Game 5"]}
+                gameHeaders={leinsterGameHeaders}
               />
             )}
           </>

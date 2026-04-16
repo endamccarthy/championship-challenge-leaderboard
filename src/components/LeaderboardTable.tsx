@@ -75,14 +75,30 @@ export function LeaderboardTable({ data }: LeaderboardTableProps) {
   return (
     <div class="table-container">
       <div class="table-controls">
-        <input
-          type="search"
-          placeholder="Search by name, county, or player..."
-          value={globalFilter}
-          onInput={(e) => setGlobalFilter((e.target as HTMLInputElement).value)}
-          class="search-input"
-          aria-label="Search leaderboard"
-        />
+        <div class="search-wrapper">
+          <svg
+            class="search-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.35-4.35" />
+          </svg>
+          <input
+            type="search"
+            placeholder="Search by name, county, or player..."
+            value={globalFilter}
+            onInput={(e) =>
+              setGlobalFilter((e.target as HTMLInputElement).value)
+            }
+            class="search-input"
+            aria-label="Search leaderboard"
+          />
+        </div>
       </div>
 
       <div class="table-scroll">
@@ -146,6 +162,60 @@ export function LeaderboardTable({ data }: LeaderboardTableProps) {
             )}
           </tbody>
         </table>
+      </div>
+
+      <div class="card-list">
+        {table.getRowModel().rows.length === 0 ? (
+          <div
+            class="no-results"
+            style={{ padding: "2rem", textAlign: "center" }}
+          >
+            No results found
+          </div>
+        ) : (
+          table.getRowModel().rows.map((row, index) => {
+            const entry = row.original;
+            return (
+              <div
+                class="leaderboard-card"
+                key={row.id}
+                style={{ animationDelay: `${index * 0.04}s` }}
+              >
+                <div
+                  class={`card-position${entry.position <= 3 ? ` top-${entry.position}` : ""}`}
+                >
+                  {entry.position}
+                </div>
+                <div class="card-body">
+                  <div class="card-header-row">
+                    <span class="card-name">{entry.name}</span>
+                    <span class="card-points">
+                      {entry.points} <small>pts</small>
+                    </span>
+                  </div>
+                  <div class="card-picks">
+                    <div class="pick">
+                      <span class="pick-label">Munster</span>
+                      <span class="pick-value">{entry.munsterWinner}</span>
+                    </div>
+                    <div class="pick">
+                      <span class="pick-label">Leinster</span>
+                      <span class="pick-value">{entry.leinsterWinner}</span>
+                    </div>
+                    <div class="pick">
+                      <span class="pick-label">Top Scorer M</span>
+                      <span class="pick-value">{entry.topScorerMunster}</span>
+                    </div>
+                    <div class="pick">
+                      <span class="pick-label">Top Scorer L</span>
+                      <span class="pick-value">{entry.topScorerLeinster}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })
+        )}
       </div>
 
       <div class="pagination">

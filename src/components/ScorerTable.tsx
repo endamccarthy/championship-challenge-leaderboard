@@ -7,6 +7,8 @@ interface ScorerTableProps {
 }
 
 export function ScorerTable({ data, title, gameHeaders }: ScorerTableProps) {
+  const showFinal = data.some((e) => e.final !== "");
+
   return (
     <div class="table-container">
       <h2 class="table-title">{title}</h2>
@@ -20,7 +22,7 @@ export function ScorerTable({ data, title, gameHeaders }: ScorerTableProps) {
               {gameHeaders.map((h) => (
                 <th key={h}>{h}</th>
               ))}
-              <th>Final</th>
+              {showFinal && <th>Final</th>}
             </tr>
           </thead>
           <tbody>
@@ -31,18 +33,56 @@ export function ScorerTable({ data, title, gameHeaders }: ScorerTableProps) {
                 </td>
                 <td data-label="County">{entry.county}</td>
                 <td data-label="Total">
-                  <strong>{entry.totalPoints}</strong>
+                  <strong>{entry.totalDisplay}</strong>
                 </td>
                 {entry.games.map((g, i) => (
                   <td key={i} data-label={gameHeaders[i] ?? `Game ${i + 1}`}>
                     {g}
                   </td>
                 ))}
-                <td data-label="Final">{entry.final}</td>
+                {showFinal && <td data-label="Final">{entry.final}</td>}
               </tr>
             ))}
           </tbody>
         </table>
+      </div>
+
+      <div class="scorer-card-list">
+        {data.map((entry, index) => (
+          <div
+            class="scorer-card"
+            key={entry.player}
+            style={{ animationDelay: `${index * 0.04}s` }}
+          >
+            <div class="scorer-card-header">
+              <div class="scorer-card-left">
+                <span class="scorer-card-player">{entry.player}</span>
+                <span class="scorer-card-county">{entry.county}</span>
+              </div>
+              <span class="scorer-card-total">{entry.totalDisplay}</span>
+            </div>
+            <div class="scorer-card-games">
+              {entry.games.map((g, i) =>
+                g ? (
+                  <div class="scorer-card-game" key={i}>
+                    <span class="scorer-card-game-label">
+                      {gameHeaders[i]
+                        ? gameHeaders[i].replace("Game ", "G")
+                        : `G${i + 1}`}
+                    </span>
+                    <span class="scorer-card-game-value">{g}</span>
+                  </div>
+                ) : null,
+              )}
+              {showFinal && (
+                <div class="scorer-card-game">
+                  <span class="scorer-card-game-label">Final</span>
+                  <span class="scorer-card-game-value">{entry.final}</span>
+                </div>
+              )}
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

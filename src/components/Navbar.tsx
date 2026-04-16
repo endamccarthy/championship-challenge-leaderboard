@@ -15,8 +15,8 @@ export function Navbar({ activeTab, onTabChange }: NavbarProps) {
   return (
     <header class="site-header">
       <div class="header-content">
-        <h1 class="site-title">Championship Challenge 2026</h1>
-        <p class="site-subtitle">Gortnahoe Glengoole GAA</p>
+        <h1 class="site-title">Championship Challenge</h1>
+        <p class="site-subtitle">Gortnahoe Glengoole GAA · 2026</p>
       </div>
       <nav class="tab-nav" role="tablist" aria-label="Main navigation">
         {tabs.map((tab) => (

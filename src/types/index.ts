@@ -11,9 +11,15 @@ export interface LeaderboardEntry {
 export interface ScorerEntry {
   player: string;
   county: string;
-  totalPoints: string;
+  totalDisplay: string;
+  totalNumeric: number;
   games: string[];
   final: string;
+}
+
+export interface ScorerResult {
+  entries: ScorerEntry[];
+  gameHeaders: string[];
 }
 
 export type Tab = "leaderboard" | "munster" | "leinster";
