@@ -4,13 +4,6 @@ import { Navbar } from "./components/Navbar";
 import { LeaderboardTable } from "./components/LeaderboardTable";
 import { ScorerTable } from "./components/ScorerTable";
 import {
-  dummyLeaderboard,
-  dummyMunsterScorers,
-  dummyLeinsterScorers,
-  dummyMunsterGameHeaders,
-  dummyLeinsterGameHeaders,
-} from "./data/dummy";
-import {
   fetchLeaderboard,
   fetchMunsterScorers,
   fetchLeinsterScorers,
@@ -27,19 +20,6 @@ export function App() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const useDummy =
-      !import.meta.env.VITE_SHEETS_API_KEY || !import.meta.env.VITE_SHEET_ID;
-
-    if (useDummy) {
-      setLeaderboard(dummyLeaderboard);
-      setMunsterScorers(dummyMunsterScorers);
-      setLeinsterScorers(dummyLeinsterScorers);
-      setMunsterGameHeaders(dummyMunsterGameHeaders);
-      setLeinsterGameHeaders(dummyLeinsterGameHeaders);
-      setLoading(false);
-      return;
-    }
-
     Promise.all([
       fetchLeaderboard(),
       fetchMunsterScorers(),
@@ -55,12 +35,7 @@ export function App() {
       })
       .catch((err) => {
         console.error("Failed to fetch data:", err);
-        setError("Unable to load data. Showing sample data.");
-        setLeaderboard(dummyLeaderboard);
-        setMunsterScorers(dummyMunsterScorers);
-        setLeinsterScorers(dummyLeinsterScorers);
-        setMunsterGameHeaders(dummyMunsterGameHeaders);
-        setLeinsterGameHeaders(dummyLeinsterGameHeaders);
+        setError("Unable to load data.");
       })
       .finally(() => setLoading(false));
   }, []);
