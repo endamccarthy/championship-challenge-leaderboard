@@ -235,6 +235,7 @@ export function LeaderboardTable({ data }: LeaderboardTableProps) {
           visibleRows.map((row, index) => {
             const entry = row.original;
             const position = row.index + 1;
+            const visualPosition = index + 1;
             const isFirstPage = index < PAGE_SIZE;
             return (
               <div
@@ -247,7 +248,7 @@ export function LeaderboardTable({ data }: LeaderboardTableProps) {
                 }
               >
                 <div
-                  class={`card-position${position <= 3 ? ` top-${position}` : ""}`}
+                  class={`card-position${visualPosition <= 3 ? ` top-${visualPosition}` : ""}`}
                 >
                   {position}
                 </div>
