@@ -4,14 +4,27 @@ interface ScorerTableProps {
   data: ScorerEntry[];
   title: string;
   gameHeaders: string[];
+  variant?: "munster" | "leinster";
 }
 
-export function ScorerTable({ data, title, gameHeaders }: ScorerTableProps) {
+export function ScorerTable({
+  data,
+  title,
+  gameHeaders,
+  variant,
+}: ScorerTableProps) {
   const showFinal = data.some((e) => e.final !== "");
 
   return (
-    <div class="table-container">
-      <h2 class="table-title">{title}</h2>
+    <div>
+      <h2
+        class={`scorer-page-title${variant ? ` scorer-page-title--${variant}` : ""}`}
+      >
+        {title}
+      </h2>
+      <div
+        class={`table-container${variant ? ` table-container--${variant}` : ""}`}
+      >
       <div class="table-scroll">
         <table class="scorer-table">
           <thead>
@@ -83,6 +96,7 @@ export function ScorerTable({ data, title, gameHeaders }: ScorerTableProps) {
             </div>
           </div>
         ))}
+      </div>
       </div>
     </div>
   );

@@ -124,7 +124,7 @@ export function LeaderboardTable({ data }: LeaderboardTableProps) {
           loadMore();
         }
       },
-      { rootMargin: "200px" },
+      { rootMargin: "600px" },
     );
 
     observer.observe(sentinel);
@@ -235,11 +235,16 @@ export function LeaderboardTable({ data }: LeaderboardTableProps) {
           visibleRows.map((row, index) => {
             const entry = row.original;
             const position = row.index + 1;
+            const isFirstPage = index < PAGE_SIZE;
             return (
               <div
-                class="leaderboard-card"
+                class={`leaderboard-card${isFirstPage ? "" : " no-anim"}`}
                 key={row.id}
-                style={{ animationDelay: `${index * 0.04}s` }}
+                style={
+                  isFirstPage
+                    ? { animationDelay: `${index * 0.04}s` }
+                    : undefined
+                }
               >
                 <div
                   class={`card-position${position <= 3 ? ` top-${position}` : ""}`}

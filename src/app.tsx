@@ -64,15 +64,17 @@ export function App() {
             {activeTab === "munster" && (
               <ScorerTable
                 data={munsterScorers}
-                title="Munster Top Scorers - From Play"
+                title="Munster Top Scorers (from play)"
                 gameHeaders={munsterGameHeaders}
+                variant="munster"
               />
             )}
             {activeTab === "leinster" && (
               <ScorerTable
                 data={leinsterScorers}
-                title="Leinster Top Scorers - From Play"
+                title="Leinster Top Scorers (from play)"
                 gameHeaders={leinsterGameHeaders}
+                variant="leinster"
               />
             )}
           </>

@@ -1,10 +1,10 @@
 /* === Championship Challenge 2026 — Dark Sports Dashboard === */
 
 :root {
-  --red: #e63946;
-  --red-dark: #c62833;
-  --red-glow: rgba(230, 57, 70, 0.2);
-  --red-subtle: rgba(230, 57, 70, 0.08);
+  --accent: #94a3b8;
+  --accent-dark: #7b8ba0;
+  --accent-glow: rgba(148, 163, 184, 0.2);
+  --accent-subtle: rgba(148, 163, 184, 0.08);
 
   --bg-base: #0c0e16;
   --bg-surface: #14171f;
@@ -87,7 +87,7 @@ body {
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, var(--red), #ff6b6b, var(--red));
+  background: linear-gradient(90deg, var(--accent), #b0bec5, var(--accent));
 }
 
 .header-content {
@@ -142,19 +142,19 @@ body {
 }
 
 .tab-btn:focus-visible {
-  outline: 2px solid var(--red);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
 .tab-btn--active {
-  color: #fff;
-  background: var(--red);
-  border-color: var(--red);
-  box-shadow: 0 2px 12px var(--red-glow);
+  color: var(--bg-base);
+  background: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 2px 12px var(--accent-glow);
 }
 
 .tab-btn--active:hover {
-  background: var(--red-dark);
+  background: var(--accent-dark);
 }
 
 /* === MAIN CONTENT === */
@@ -193,7 +193,7 @@ body {
   width: 36px;
   height: 36px;
   border: 3px solid var(--border-light);
-  border-top-color: var(--red);
+  border-top-color: var(--accent);
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
   margin-bottom: 1rem;
@@ -221,6 +221,28 @@ body {
   padding: 1.25rem 1.5rem;
   color: var(--text-primary);
   border-bottom: 1px solid var(--border);
+}
+
+/* === SCORER PAGE TITLE (sticky) === */
+.scorer-page-title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  padding: 1rem 0.25rem;
+  margin-bottom: 0.75rem;
+  color: var(--text-primary);
+  position: sticky;
+  top: 0;
+  z-index: 90;
+  background: var(--bg-base);
+}
+
+.scorer-page-title--munster {
+  color: #c62833;
+}
+
+.scorer-page-title--leinster {
+  color: #2563eb;
 }
 
 /* === SEARCH === */
@@ -258,8 +280,8 @@ body {
 
 .search-input:focus {
   outline: none;
-  border-color: var(--red);
-  box-shadow: 0 0 0 3px var(--red-glow);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
   background: var(--bg-elevated);
 }
 
@@ -334,7 +356,7 @@ body {
 /* Points column emphasis */
 .leaderboard-table tbody td:nth-child(3) {
   font-weight: 700;
-  color: var(--red);
+  color: var(--accent);
 }
 
 .no-results {
@@ -356,6 +378,10 @@ body {
   border-bottom: 1px solid var(--border);
   animation: fadeInUp 0.3s ease both;
   transition: background 0.2s;
+}
+
+.leaderboard-card.no-anim {
+  animation: none;
 }
 
 .leaderboard-card:last-child {
@@ -428,7 +454,7 @@ body {
   font-family: var(--font-display);
   font-weight: 800;
   font-size: 1.1rem;
-  color: var(--red);
+  color: var(--accent);
   flex-shrink: 0;
 }
 
@@ -518,7 +544,7 @@ body {
   font-family: var(--font-display);
   font-weight: 800;
   font-size: 1.15rem;
-  color: var(--red);
+  color: var(--accent);
 }
 
 .scorer-card-games {
@@ -615,13 +641,23 @@ body {
   }
 
   .tab-nav {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 0.35rem;
     padding: 0.35rem 0.75rem 0.65rem;
+    max-width: 340px;
+    margin: 0 auto;
   }
 
   .tab-btn {
     padding: 0.45rem 0.85rem;
     font-size: 0.8rem;
+  }
+
+  .tab-btn:first-child {
+    grid-column: 1 / -1;
+    justify-self: center;
+    width: 50%;
   }
 
   .main-content {
@@ -651,6 +687,12 @@ body {
     padding: 1rem 1.25rem 0.75rem;
     font-size: 1rem;
   }
+
+  .scorer-page-title {
+    font-size: 1rem;
+    padding: 0.75rem 0.25rem;
+    margin-bottom: 0.5rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -662,10 +704,6 @@ body {
     font-size: 0.78rem;
   }
 
-  .tab-nav {
-    flex-wrap: wrap;
-  }
-
   .tab-btn {
     padding: 0.4rem 0.65rem;
     font-size: 0.75rem;
@@ -675,6 +713,53 @@ body {
     grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
     gap: 0.2rem 0.5rem;
   }
+}
+
+/* === PROVINCE COLOUR THEMES === */
+.table-container--munster {
+  --province-accent: #c62833;
+  --province-glow: rgba(198, 40, 51, 0.15);
+  --province-subtle: rgba(198, 40, 51, 0.06);
+  --province-border: rgba(198, 40, 51, 0.12);
+}
+
+.table-container--leinster {
+  --province-accent: #2563eb;
+  --province-glow: rgba(37, 99, 235, 0.15);
+  --province-subtle: rgba(37, 99, 235, 0.06);
+  --province-border: rgba(37, 99, 235, 0.12);
+}
+
+.table-container--munster,
+.table-container--leinster {
+  border-color: var(--province-border);
+}
+
+.table-container--munster .table-title,
+.table-container--leinster .table-title {
+  border-bottom-color: var(--province-border);
+}
+
+.table-container--munster .scorer-table thead th,
+.table-container--leinster .scorer-table thead th {
+  background: var(--province-subtle);
+  border-bottom-color: var(--province-border);
+}
+
+.table-container--munster .scorer-table tbody td:nth-child(3),
+.table-container--leinster .scorer-table tbody td:nth-child(3) {
+  color: var(--province-accent);
+  font-weight: 700;
+}
+
+.table-container--munster .scorer-card-total,
+.table-container--leinster .scorer-card-total {
+  color: var(--province-accent);
+}
+
+.table-container--munster .scorer-card-game,
+.table-container--leinster .scorer-card-game {
+  border-color: var(--province-border);
 }
 
 /* === SCROLLBAR === */
