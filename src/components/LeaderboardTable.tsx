@@ -19,7 +19,6 @@ import type { LeaderboardEntry } from "../types";
 
 const PAGE_SIZE = 50;
 
-/** Strip diacritics so e.g. "áine" matches a search for "aine" */
 function stripDiacritics(str: string): string {
   return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
