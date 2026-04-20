@@ -82,7 +82,7 @@ export function App() {
       </main>
 
       <footer class="site-footer">
-        <p>© 2026 Gortnahoe Glengoole GAA</p>
+        <p>© 2026 Enda McCarthy</p>
       </footer>
     </div>
   );
