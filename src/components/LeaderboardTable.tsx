@@ -19,8 +19,14 @@ import type { LeaderboardEntry } from "../types";
 
 const PAGE_SIZE = 50;
 
-function stripDiacritics(str: string): string {
-  return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+function normalizeSearch(str: string): string {
+  return str
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/['''\u2018\u2019`]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase();
 }
 
 const accentInsensitiveFilter: FilterFn<LeaderboardEntry> = (
@@ -28,10 +34,8 @@ const accentInsensitiveFilter: FilterFn<LeaderboardEntry> = (
   columnId,
   filterValue,
 ) => {
-  const value = stripDiacritics(
-    String(row.getValue(columnId) ?? ""),
-  ).toLowerCase();
-  const filter = stripDiacritics(String(filterValue)).toLowerCase();
+  const value = normalizeSearch(String(row.getValue(columnId) ?? ""));
+  const filter = normalizeSearch(String(filterValue));
   return value.includes(filter);
 };
 
